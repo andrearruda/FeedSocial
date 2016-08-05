@@ -8,7 +8,7 @@ class FacebookService extends FeedsServiceAbstract
 {
     private $username = 'rio2016pt';
     private $length = 5;
-    private  $acessToken = 'EAAPfK6SRjpgBAEvFvUr4y9GjQZBJLVCvXO0h7hBtieZBmU383zKyB9qqNaf4svJA7lc2OKQwnZBT3FfTgTiPBZA8JV2TePFANKirfXJSnwVhBI4ZCvyHJtXwR9CTZA1ZBxwkPx8IR4uuMZAXKa4ufLzLhDrbzUoZCgZAMZD';
+    private $acessToken = 'EAAPfK6SRjpgBAEvFvUr4y9GjQZBJLVCvXO0h7hBtieZBmU383zKyB9qqNaf4svJA7lc2OKQwnZBT3FfTgTiPBZA8JV2TePFANKirfXJSnwVhBI4ZCvyHJtXwR9CTZA1ZBxwkPx8IR4uuMZAXKa4ufLzLhDrbzUoZCgZAMZD';
 
     public function __construct()
     {
@@ -19,13 +19,18 @@ class FacebookService extends FeedsServiceAbstract
             'default_access_token' => $this->acessToken
         ]);
 
-        $request = $fb->get('/' . $this->username . '?fields=feed.limit(' . $this->length . '){created_time, from{name, username, picture.width(500)}, type, message, description, attachments{media}, source}');
+        $request = $fb->get('/' . $this->username . '?fields=feed.limit(' . $this->length . '){created_time, from{name, username, picture.width(500)}, type, message, description, attachments{media{image{src}}}, source}');
         $response = $request->getGraphPage()->getField('feed');
 
         foreach($response as $item)
         {
+            /**
+             * @var $date \DateTime
+             */
+            $date = $item->getField('created_time')->setTimezone(new \DateTimeZone('America/Sao_paulo'));
+
             $this->addFeed(array(
-                'created' => $item->getField('created_time')->format('Y-m-d H:i:s'), #TODO acertar timezone
+                'created' => $date->format('Y-m-d H:i:s'),
                 'typefeed' => 'facebook',
                 'user' => array(
                     'name' => $item->getField('from')->getField('name'),
@@ -34,8 +39,9 @@ class FacebookService extends FeedsServiceAbstract
                 ),
                 'text' => $item->getField('message'),
                 'midia' => array(
-                    'type' => $item->getField('type'),
-                    'image' => $item->getField('attachments')->getField('0')->getField('media')->getField('image')->getField('src'),
+                    'type' => $item->getField('type') == 'photo' ? 'image' : $item->getField('type'),
+                    'image' => '', #TODO VERIFICAR IMAGE
+///                    'image' => $item->getField('attachments')->getField('0')->getField('media')->getField('image')->getField('src'),
                     'video' => $item->getField('type') == 'video' ? $item->getField('source') : ''
                 ),
             ));

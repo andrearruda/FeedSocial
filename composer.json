@@ -1,5 +1,5 @@
 {
-    "name": "php -S 0.0.0.0:8888",
+    "name": "akrabat/slim3-skeleton",
     "description": "Simple Slim Framework 3 skeleton with Twig & Monolog.",
     "license": "BSD-3-Clause",
     "type": "project",
@@ -23,6 +23,7 @@
         "jdorn/file-system-cache": "dev-master",
         "nesbot/carbon": "^1.21",
         "j7mbo/twitter-api-php": "dev-master",
-        "facebook/php-sdk-v4" : "~5.0"
+        "facebook/php-sdk-v4" : "~5.0",
+        "haridarshan/instagram-php": "^2.2"
     }
 }

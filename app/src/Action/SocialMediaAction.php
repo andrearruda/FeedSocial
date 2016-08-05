@@ -31,18 +31,7 @@ final class SocialMediaAction
 
         if($data === false)
         {
-
-/*            $instagramService = new InstagramService();*/
-            $twitterService = new TwitterService();
-            $facebookService = new FacebookService();
-
-
-            $data = array(
-                $twitterService->getFeeds(),
-                $facebookService->getFeeds()
-/*
-                $instagramService->getFeeds()*/
-            );
+            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds(), (new TwitterService())->getFeeds());
         }
 
         $xmlBuilder = new XmlBuilder('root');

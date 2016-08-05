@@ -15,7 +15,7 @@ class FeedsServiceAbstract
         return $this->feeds;
     }
 
-    protected function addFeed($feed)
+    protected function addFeed(array $feed)
     {
         $this->feeds[] = $feed;
     }

@@ -2,9 +2,16 @@
 
 namespace App\Service;
 
+use Haridarshan\Instagram\Instagram;
+use Haridarshan\Instagram\InstagramRequest;
+use Haridarshan\Instagram\Exceptions\InstagramOAuthException;
+use Haridarshan\Instagram\Exceptions\InstagramResponseException;
+use Haridarshan\Instagram\Exceptions\InstagramServerException;
+
 class InstagramService extends FeedsServiceAbstract
 {
     private $username = 'rio2016';
+    private $length = 5;
 
     public function __construct()
     {
@@ -21,8 +28,15 @@ class InstagramService extends FeedsServiceAbstract
                     'picture' => $item->caption->from->profile_picture,
                 ),
                 'text' => $item->caption->text,
-                'midia' => $item->type == 'video' ? $item->videos->standard_resolution->url : $item->images->standard_resolution->url,
+                'midia' => array(
+                    'type' => $item->type,
+                    'image' => $item->images->standard_resolution->url,
+                    'video' => $item->type == 'video' ? $item->videos->standard_resolution->url : ''
+                ),
             ));
+
+            if($key >= $this->length)
+                break;
         }
     }
 }
