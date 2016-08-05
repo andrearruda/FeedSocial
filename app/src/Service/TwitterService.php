@@ -38,7 +38,11 @@ class TwitterService extends FeedsServiceAbstract
                     'picture' => str_replace('_normal.', '.', $item->user->profile_image_url),
                 ),
                 'text' => $item->text,
-                'midia' => $item->entities->media[0]->type == 'video' ? $item->entities->media[0]->video_info->variants[0]->url : $item->entities->media[0]->media_url,
+                'midia' => array(
+                    'type' => $item->entities->media[0]->type,
+                    'image' => $item->entities->media[0]->media_url,
+                    'video' => $item->entities->media[0]->type == 'video' ? $item->entities->media[0]->video_info->variants[0]->url : '',
+                )
             ));
         }
     }

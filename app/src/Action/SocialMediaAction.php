@@ -32,14 +32,15 @@ final class SocialMediaAction
         if($data === false)
         {
 
-/*            $instagramService = new InstagramService();
-            $twitterService = new TwitterService();*/
+/*            $instagramService = new InstagramService();*/
+            $twitterService = new TwitterService();
             $facebookService = new FacebookService();
 
 
             $data = array(
+                $twitterService->getFeeds(),
                 $facebookService->getFeeds()
-/*                $twitterService->getFeeds(),
+/*
                 $instagramService->getFeeds()*/
             );
         }
