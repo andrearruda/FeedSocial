@@ -19,24 +19,68 @@ class InstagramService extends FeedsServiceAbstract
 
         foreach($json->items as $key => $item)
         {
+            if($key >= $this->length)
+                break;
+
+            $picture_data = array(
+                'name' => 'instagram_' . date('Ymd') . '.jpg',
+                'source' => $item->caption->from->profile_picture,
+                'path' => __DIR__ . '/../../../data/pictures/'
+            );
+
+            if (!file_exists($picture_data['path'] . $picture_data['name']))
+            {
+                file_put_contents($picture_data['path'] . $picture_data['name'], file_get_contents($picture_data['source']));
+            }
+
+            $image_data = array(
+                'name' => $item->id . '.jpg',
+                'source' => $item->images->standard_resolution->url,
+                'path' => __DIR__ . '/../../../data/images/'
+            );
+
+            if (!file_exists($image_data['path'] . $image_data['name']))
+            {
+                file_put_contents($image_data['path'] . $image_data['name'], file_get_contents($image_data['source']));
+            }
+
+            $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/data/images/' . $image_data['name'];
+
+            if($item->type == 'video')
+            {
+                $video_data = array(
+                    'name' => $item->id . '.' . pathinfo($item->videos->standard_resolution->url, PATHINFO_EXTENSION),
+                    'source' => $item->videos->standard_resolution->url,
+                    'path' => __DIR__ . '/../../../data/videos/'
+                );
+
+                if (!file_exists($video_data['path'] . $video_data['name']))
+                {
+                    file_put_contents($video_data['path'] . $video_data['name'], file_get_contents($video_data['source']));
+                }
+
+                $video_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/videos/' . $video_data['name'];
+            }
+            else
+            {
+                $video_url = '';
+            }
+
             $this->addFeed(array(
                 'created' => date('Y-m-d H:i:s', $item->caption->created_time),
                 'typefeed' => 'instagram',
                 'user' => array(
                     'name' => $item->caption->from->full_name,
                     'username' => $item->caption->from->username,
-                    'picture' => $item->caption->from->profile_picture,
+                    'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/pictures/' . $picture_data['name'],
                 ),
                 'text' => $item->caption->text,
                 'midia' => array(
                     'type' => $item->type,
-                    'image' => $item->images->standard_resolution->url,
-                    'video' => $item->type == 'video' ? $item->videos->standard_resolution->url : ''
+                    'image' => $image_url,
+                    'video' => $video_url
                 ),
             ));
-
-            if($key >= $this->length)
-                break;
         }
     }
 }

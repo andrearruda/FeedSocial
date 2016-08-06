@@ -27,11 +27,12 @@ final class SocialMediaAction
         $key = FileSystemCache::generateCacheKey('feed', null);
         $data = FileSystemCache::retrieve($key);
 
-        $data = false;
-
         if($data === false)
         {
-            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds(), (new TwitterService())->getFeeds());
+//            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds(), (new TwitterService())->getFeeds());
+            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds());
+
+            FileSystemCache::store($key, $data, 1800);
         }
 
         $xmlBuilder = new XmlBuilder('root');
