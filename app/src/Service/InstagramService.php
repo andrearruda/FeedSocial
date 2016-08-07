@@ -8,6 +8,8 @@ use Haridarshan\Instagram\Exceptions\InstagramOAuthException;
 use Haridarshan\Instagram\Exceptions\InstagramResponseException;
 use Haridarshan\Instagram\Exceptions\InstagramServerException;
 
+use Stringy\Stringy as S;
+
 class InstagramService extends FeedsServiceAbstract
 {
     private $username = 'rio2016';
@@ -44,7 +46,7 @@ class InstagramService extends FeedsServiceAbstract
                 file_put_contents($image_data['path'] . $image_data['name'], file_get_contents($image_data['source']));
             }
 
-            $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/data/images/' . $image_data['name'];
+            $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/images/' . $image_data['name'];
 
             if($item->type == 'video')
             {
@@ -66,6 +68,8 @@ class InstagramService extends FeedsServiceAbstract
                 $video_url = '';
             }
 
+            $text = array_shift(preg_split("/\\r\\n|\\r|\\n/", $item->caption->text));
+
             $this->addFeed(array(
                 'created' => date('Y-m-d H:i:s', $item->caption->created_time),
                 'typefeed' => 'instagram',
@@ -74,7 +78,7 @@ class InstagramService extends FeedsServiceAbstract
                     'username' => $item->caption->from->username,
                     'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/pictures/' . $picture_data['name'],
                 ),
-                'text' => $item->caption->text,
+                'text' => (string) S::create($text)->safeTruncate(180, '...'),
                 'midia' => array(
                     'type' => $item->type,
                     'image' => $image_url,

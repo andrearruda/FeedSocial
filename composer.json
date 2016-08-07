@@ -22,6 +22,7 @@
         "thapp/xmlbuilder": "^0.1.4",
         "jdorn/file-system-cache": "dev-master",
         "nesbot/carbon": "^1.21",
+        "danielstjules/stringy": "~2.3",
         "j7mbo/twitter-api-php": "dev-master",
         "facebook/php-sdk-v4" : "~5.0",
         "haridarshan/instagram-php": "^2.2"

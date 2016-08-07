@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Facebook;
+use Stringy\Stringy as S;
 
 class FacebookService extends FeedsServiceAbstract
 {
@@ -24,7 +25,7 @@ class FacebookService extends FeedsServiceAbstract
 
         foreach($response as $item)
         {
-            if($item->getField('type') == 'photo' || $item->getField('type') == 'video')
+            if(($item->getField('type') == 'photo' || $item->getField('type') == 'video') && $item->getField('message') != '')
             {
                 /**
                  * @var $date \DateTime
@@ -62,6 +63,28 @@ class FacebookService extends FeedsServiceAbstract
                     $image_url = '';
                 }
 
+                if($item->getField('type') == 'video')
+                {
+                    $video_data = array(
+                        'name' => $item->getField('id') . '.' . pathinfo(preg_replace('/\?.*/', '', $item->getField('source')), PATHINFO_EXTENSION),
+                        'source' => $item->getField('source'),
+                        'path' => __DIR__ . '/../../../data/videos/'
+                    );
+
+                    if (!file_exists($video_data['path'] . $video_data['name']))
+                    {
+                        file_put_contents($video_data['path'] . $video_data['name'], file_get_contents($video_data['source']));
+                    }
+
+                    $video_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/videos/' . $video_data['name'];
+                }
+                else
+                {
+                    $video_url = '';
+                }
+
+                $text = array_shift(preg_split("/\\r\\n|\\r|\\n/", $item->getField('message')));
+
                 $this->addFeed(array(
                     'created' => $date->format('Y-m-d H:i:s'),
                     'typefeed' => 'facebook',
@@ -70,11 +93,11 @@ class FacebookService extends FeedsServiceAbstract
                         'username' => $item->getField('from')->getField('username'),
                         'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/pictures/' . $picture_data['name'],
                     ),
-                    'text' => $item->getField('message') != '' ? $item->getField('message') : '',
+                    'text' => (string) S::create($text)->safeTruncate(180, '...'),
                     'midia' => array(
                         'type' => $item->getField('type') == 'photo' ? 'image' : $item->getField('type'),
                         'image' => $image_url,
-                        'video' => $item->getField('type') == 'video' ? $item->getField('source') : ''
+                        'video' => $video_url
                     ),
                 ));
             }
