@@ -73,10 +73,22 @@ class FacebookService extends FeedsServiceAbstract
 
                     if (!file_exists($video_data['path'] . $video_data['name']))
                     {
-                        file_put_contents($video_data['path'] . $video_data['name'], file_get_contents($video_data['source']));
-                    }
+                        $key = $item->getField('id');
+                        $json = json_decode(file_get_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json'), true);
 
-                    $video_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/videos/' . $video_data['name'];
+                        if(!array_key_exists($key, $json))
+                        {
+                            $json[$key] =  $video_data;
+                        }
+
+                        file_put_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json', json_encode($json));
+
+                        $video_url = '';
+                    }
+                    else
+                    {
+                        $video_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/videos/' . $video_data['name'];
+                    }
                 }
                 else
                 {
