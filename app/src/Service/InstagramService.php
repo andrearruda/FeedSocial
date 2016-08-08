@@ -48,38 +48,6 @@ class InstagramService extends FeedsServiceAbstract
 
             $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/images/' . $image_data['name'];
 
-            if($item->type == 'video')
-            {
-                $video_data = array(
-                    'name' => $item->id . '.' . pathinfo($item->videos->standard_resolution->url, PATHINFO_EXTENSION),
-                    'source' => $item->videos->standard_resolution->url,
-                    'path' => __DIR__ . '/../../../data/videos/'
-                );
-
-                if (!file_exists($video_data['path'] . $video_data['name']))
-                {
-                    $key = $item->id;
-                    $json = json_decode(file_get_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json'), true);
-
-                    if(!array_key_exists($key, $json))
-                    {
-                        $json[$key] =  $video_data;
-                    }
-
-                    file_put_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json', json_encode($json));
-
-                    $video_url = '';
-                }
-                else
-                {
-                    $video_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/videos/' . $video_data['name'];
-                }
-            }
-            else
-            {
-                $video_url = '';
-            }
-
             $text = array_shift(preg_split("/\\r\\n|\\r|\\n/", $item->caption->text));
 
             $this->addFeed(array(
@@ -94,7 +62,7 @@ class InstagramService extends FeedsServiceAbstract
                 'midia' => array(
                     'type' => $item->type,
                     'image' => $image_url,
-                    'video' => $video_url
+                    'video' => ''
                 ),
             ));
         }

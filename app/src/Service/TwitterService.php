@@ -29,21 +29,49 @@ class TwitterService extends FeedsServiceAbstract
 
         foreach($json as $key => $item)
         {
-            $this->addFeed(array(
-                'created' => date('Y-m-d H:i:s', strtotime($item->created_at)),
-                'typefeed' => 'twitter',
-                'user' => array(
-                    'name' => $item->user->name,
-                    'username' => $item->user->screen_name,
-                    'picture' => str_replace('_normal.', '.', $item->user->profile_image_url),
-                ),
-                'text' => $item->text,
-                'midia' => array(
-                    'type' => $item->entities->media[0]->type,
-                    'image' => $item->entities->media[0]->media_url,
-                    'video' => $item->entities->media[0]->type == 'video' ? $item->entities->media[0]->video_info->variants[0]->url : '',
-                )
-            ));
+            if(isset($item->entities->media))
+            {
+                $picture_data = array(
+                    'name' => 'twitter_' . date('Ymd') . '.jpg',
+                    'source' => str_replace('_normal.', '.', $item->user->profile_image_url),
+                    'path' => __DIR__ . '/../../../data/pictures/'
+                );
+
+                if (!file_exists($picture_data['path'] . $picture_data['name']))
+                {
+                    file_put_contents($picture_data['path'] . $picture_data['name'], file_get_contents($picture_data['source']));
+                }
+
+                $image_data = array(
+                    'name' => $item->id_str . '.jpg',
+                    'source' => $item->entities->media[0]->media_url,
+                    'path' => __DIR__ . '/../../../data/images/'
+                );
+
+                if (!file_exists($image_data['path'] . $image_data['name']))
+                {
+                    file_put_contents($image_data['path'] . $image_data['name'], file_get_contents($image_data['source']));
+                }
+
+                $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/images/' . $image_data['name'];
+
+
+                $this->addFeed(array(
+                    'created' => date('Y-m-d H:i:s', strtotime($item->created_at)),
+                    'typefeed' => 'twitter',
+                    'user' => array(
+                        'name' => $item->user->name,
+                        'username' => $item->user->screen_name,
+                        'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/pictures/' . $picture_data['name'],
+                    ),
+                    'text' => $item->text,
+                    'midia' => array(
+                        'type' => $item->entities->media[0]->type,
+                        'image' => $image_url,
+                        'video' => '',
+                    )
+                ));
+            }
         }
     }
 }

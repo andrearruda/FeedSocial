@@ -63,38 +63,6 @@ class FacebookService extends FeedsServiceAbstract
                     $image_url = '';
                 }
 
-                if($item->getField('type') == 'video')
-                {
-                    $video_data = array(
-                        'name' => $item->getField('id') . '.' . pathinfo(preg_replace('/\?.*/', '', $item->getField('source')), PATHINFO_EXTENSION),
-                        'source' => $item->getField('source'),
-                        'path' => __DIR__ . '/../../../data/videos/'
-                    );
-
-                    if (!file_exists($video_data['path'] . $video_data['name']))
-                    {
-                        $key = $item->getField('id');
-                        $json = json_decode(file_get_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json'), true);
-
-                        if(!array_key_exists($key, $json))
-                        {
-                            $json[$key] =  $video_data;
-                        }
-
-                        file_put_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json', json_encode($json));
-
-                        $video_url = '';
-                    }
-                    else
-                    {
-                        $video_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/videos/' . $video_data['name'];
-                    }
-                }
-                else
-                {
-                    $video_url = '';
-                }
-
                 $text = array_shift(preg_split("/\\r\\n|\\r|\\n/", $item->getField('message')));
 
                 $this->addFeed(array(
@@ -109,7 +77,7 @@ class FacebookService extends FeedsServiceAbstract
                     'midia' => array(
                         'type' => $item->getField('type') == 'photo' ? 'image' : $item->getField('type'),
                         'image' => $image_url,
-                        'video' => $video_url
+                        'video' => ''
                     ),
                 ));
             }

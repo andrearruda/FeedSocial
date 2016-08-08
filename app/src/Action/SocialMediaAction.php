@@ -29,22 +29,9 @@ final class SocialMediaAction
 
         if($data === false)
         {
-//            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds(), (new TwitterService())->getFeeds());
-            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds());
-
+            $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds(), (new TwitterService())->getFeeds());
+//            $data = array_merge((new TwitterService())->getFeeds());
             FileSystemCache::store($key, $data, 1800);
-        }
-
-        $jsonVideos = json_decode(file_get_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json'), true);
-        if(count($jsonVideos) > 0)
-        {
-            $video_data = array_shift($jsonVideos);
-            if (!file_exists($video_data['path'] . $video_data['name']))
-            {
-                file_put_contents($video_data['path'] . $video_data['name'], file_get_contents($video_data['source']));
-            }
-
-            file_put_contents(__DIR__ . '/../../../cache/tmp/videosForDownload.json', json_encode($jsonVideos));
         }
 
         $xmlBuilder = new XmlBuilder('root');
