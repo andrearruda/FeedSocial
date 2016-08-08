@@ -11,4 +11,5 @@ vendor
 composer.phar
 log/*
 cache/*
-data/*
+data/images
+data/pictures

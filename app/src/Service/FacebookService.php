@@ -8,7 +8,7 @@ use Stringy\Stringy as S;
 class FacebookService extends FeedsServiceAbstract
 {
     private $username = 'rio2016pt';
-    private $length = 5;
+    private $length = 15;
     private $acessToken = 'EAAPfK6SRjpgBAEvFvUr4y9GjQZBJLVCvXO0h7hBtieZBmU383zKyB9qqNaf4svJA7lc2OKQwnZBT3FfTgTiPBZA8JV2TePFANKirfXJSnwVhBI4ZCvyHJtXwR9CTZA1ZBxwkPx8IR4uuMZAXKa4ufLzLhDrbzUoZCgZAMZD';
 
     public function __construct()
@@ -56,7 +56,7 @@ class FacebookService extends FeedsServiceAbstract
                         file_put_contents($image_data['path'] . $image_data['name'], file_get_contents($image_data['source']));
                     }
 
-                    $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/images/' . $image_data['name'];
+                    $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/images/' . $image_data['name'];
                 }
                 else
                 {
@@ -71,7 +71,7 @@ class FacebookService extends FeedsServiceAbstract
                     'user' => array(
                         'name' => $item->getField('from')->getField('name'),
                         'username' => $item->getField('from')->getField('username'),
-                        'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/olimpiadas/social_media/data/pictures/' . $picture_data['name'],
+                        'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/pictures/' . $picture_data['name'],
                     ),
                     'text' => (string) S::create($text)->safeTruncate(180, '...'),
                     'midia' => array(
