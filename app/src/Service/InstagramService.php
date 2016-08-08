@@ -13,7 +13,7 @@ use Stringy\Stringy as S;
 class InstagramService extends FeedsServiceAbstract
 {
     private $username = 'rio2016';
-    private $length = 15;
+    private $length = 10;
 
     public function __construct()
     {
