@@ -56,14 +56,12 @@ class InstagramService extends FeedsServiceAbstract
                 'user' => array(
                     'name' => $item->caption->from->full_name,
                     'username' => $item->caption->from->username,
-                    'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/pictures/' . $picture_data['name'],
                 ),
                 'text' => (string) S::create($text)->safeTruncate(180, '...'),
                 'midia' => array(
-                    'type' => $item->type,
-                    'image' => $image_url,
-                    'video' => ''
-                ),
+                    'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/pictures/' . $picture_data['name'],
+                    $image_url,
+                )
             ));
         }
     }

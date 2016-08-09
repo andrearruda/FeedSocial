@@ -30,12 +30,15 @@ final class SocialMediaAction
         if($data === false)
         {
             $data = array_merge((new FacebookService())->getFeeds(), (new InstagramService())->getFeeds(), (new TwitterService())->getFeeds());
-            FileSystemCache::store($key, $data, 300);
+            FileSystemCache::store($key, $data, 1800);
         }
 
         $xmlBuilder = new XmlBuilder('root');
         $xmlBuilder->setSingularizer(function ($name) {
             if ('itens' === $name) {
+                return 'item';
+            }
+            if ('midia' === $name) {
                 return 'item';
             }
             return $name;

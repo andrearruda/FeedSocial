@@ -8,7 +8,7 @@ use TwitterAPIExchange;
 class TwitterService extends FeedsServiceAbstract
 {
     private $username = 'rio2016';
-    private $length = 15;
+    private $length = 10;
 
     public function __construct()
     {
@@ -55,6 +55,7 @@ class TwitterService extends FeedsServiceAbstract
 
                 $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/images/' . $image_data['name'];
 
+                $text = preg_split("/\\r\\n|\\r|\\n/", $item->text);
 
                 $this->addFeed(array(
                     'created' => date('Y-m-d H:i:s', strtotime($item->created_at)),
@@ -62,13 +63,11 @@ class TwitterService extends FeedsServiceAbstract
                     'user' => array(
                         'name' => $item->user->name,
                         'username' => $item->user->screen_name,
-                        'picture' => 'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/pictures/' . $picture_data['name'],
                     ),
                     'text' => $item->text,
                     'midia' => array(
-                        'type' => $item->entities->media[0]->type,
-                        'image' => $image_url,
-                        'video' => '',
+                        'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/pictures/' . $picture_data['name'],
+                        $image_url,
                     )
                 ));
             }
