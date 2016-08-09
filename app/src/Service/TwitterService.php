@@ -8,7 +8,7 @@ use TwitterAPIExchange;
 class TwitterService extends FeedsServiceAbstract
 {
     private $username = 'rio2016';
-    private $length = 10;
+    private $length = 20;
 
     public function __construct()
     {
@@ -27,6 +27,7 @@ class TwitterService extends FeedsServiceAbstract
 
         $json = json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
 
+        $ac = 0;
         foreach($json as $key => $item)
         {
             if(isset($item->entities->media))
@@ -68,6 +69,11 @@ class TwitterService extends FeedsServiceAbstract
                         'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/images/' . $image_data['name']
                     )
                 ));
+
+                if($ac > 4)
+                    break;
+
+                $ac++;
             }
         }
     }
