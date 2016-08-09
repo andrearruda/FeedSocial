@@ -13,7 +13,7 @@ use Stringy\Stringy as S;
 class InstagramService extends FeedsServiceAbstract
 {
     private $username = 'rio2016';
-    private $length = 10;
+    private $length = 5;
 
     public function __construct()
     {
@@ -46,8 +46,6 @@ class InstagramService extends FeedsServiceAbstract
                 file_put_contents($image_data['path'] . $image_data['name'], file_get_contents($image_data['source']));
             }
 
-            $image_url = 'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/images/' . $image_data['name'];
-
             $text = array_shift(preg_split("/\\r\\n|\\r|\\n/", $item->caption->text));
 
             $this->addFeed(array(
@@ -60,7 +58,7 @@ class InstagramService extends FeedsServiceAbstract
                 'text' => (string) S::create($text)->safeTruncate(180, '...'),
                 'midia' => array(
                     'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/pictures/' . $picture_data['name'],
-                    $image_url,
+                    'http://' . $_SERVER['HTTP_HOST'] . '/rio2016/data/images/' . $image_data['name'],
                 )
             ));
         }
